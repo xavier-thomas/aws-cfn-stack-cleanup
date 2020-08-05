@@ -1,0 +1,57 @@
+{
+  "name": "aws-cfn-stack-cleanup",
+  "version": "1.0.0",
+  "description": "An  AWS lambda that deletes AWS resources that can be called directly or used as a Custom Resource in a CloudFormation template.",
+  "main": "src/index.js",
+  "keywords": [
+    "aws",
+    "code-pipeline",
+    "cloudformation",
+    "cleanup",
+    "s3",
+    "cloudwatch",
+    "lambda",
+    "nodejs"
+  ],
+  "author": "Xavier Thomas",
+  "license": "BSD-3-Clause",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "build": "babel ./src -d dist --ignore **/*.test.js,**/mocks.js && cp README.md dist/README.md && cp LICENSE dist/LICENSE",
+    "lint": "eslint --fix ./src",
+    "cfn-lint": "cfn-lint cfn-stack-cleanup.yaml",
+    "lint.ci": "eslint ./src",
+    "mutate": "stryker run",
+    "precommit": "yarn audit && yarn lint && yarn test",
+    "test": "jest --config=jest.config.json"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn precommit"
+    }
+  },
+  "dependencies": {
+    "aws-sdk": "^2.727.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.0",
+    "@stryker-mutator/babel-transpiler": "^3.3.1",
+    "@stryker-mutator/core": "^3.3.1",
+    "@stryker-mutator/javascript-mutator": "^3.3.1",
+    "@stryker-mutator/jest-runner": "^3.3.1",
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.2.5",
+    "jest": "^26.2.2",
+    "jest-junit": "^11.1.0",
+    "jest-sonar": "^0.2.10",
+    "prettier": "^2.0.5"
+  }
+}

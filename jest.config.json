@@ -1,0 +1,22 @@
+{
+	"coverageDirectory": "./coverage",
+	"collectCoverage": true,
+	"reporters": [
+		"default",
+		[
+			"jest-junit",
+			{
+				"outputDirectory": "reports"
+			}
+		],
+		[
+			"jest-sonar",
+			{
+				"outputDirectory": "reports",
+				"outputName": "test-report.xml",
+				"reportedFilePath": "relative"
+			}
+		]
+	],
+	"verbose": true
+}

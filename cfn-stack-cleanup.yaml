@@ -22,7 +22,7 @@ Metadata:
       - Cleaner
       - DevOps
       - S3
-      - Cloudwatch Logs
+      - Cloudwatch-Logs
     LicenseUrl: LICENSE
     Name: Cfn-Stack-Cleanup
     ReadmeUrl: README.md

@@ -22,7 +22,16 @@
 
 ## Overview
 
-TODO
+Cloudformation does not always cleanly delete the resources that it's created.
+The most notable example is with S3 Buckets created by Cloudformation. If these bucket's contain objects, they cannot be deleted during Cloudformation stack deletion.
+
+Similarly, there are other resources like, Log Groups or sub-stacks deployed by a CodePipeline that need to be cleaned up.
+
+This lambda is meant to be invoked as a Cloudformation custom resource that when passed resource names, will clean up those resources during stack deletion.
+
+Any other event other than stack deletion (such as stack creation or stack update) are ignored.
+
+Currently this lambda only supports Emptying and Deletion of S3 buckets, however it's planned to support other resource types in the future.
 
 ## Getting Started
 ### Deploying the Lambda
@@ -34,13 +43,13 @@ In order to deploy from CloudFormation, use the following as an example for your
 
 ```YAML
 
-Description: Deploys CodePipeline Waiter Lambda function from Serverless Application Repo
+Description: Deploys Cfn-Stack-Cleanup Lambda function from Serverless Application Repo
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
 
 Resources:
-  CodePipelineWaiter:
+  CfnStackCleanup:
     Type: AWS::Serverless::Application
     Properties:
       Location:
@@ -65,6 +74,107 @@ Once built locally you can use one of several of the following methods.
 * Build and deploy the lambda from an AWS CodePipeline / CodeBuild that's watching this repository
 * Zip the lambda and deploy it manually.
 
+
+### Permissions
+All Lambda permissions are created during deployment. Currently these are permissions to list s3 objects, delete s3 objects and delete s3 buckets.
+
+```yaml
+    - Effect: Allow
+      Action:
+        - s3:DeleteBucket
+        - s3:DeleteObjects
+        - s3:List*
+      Resource: '*'
+```
+
+
+### Invoking the Lambda
+
+```yaml
+Resources:
+  StackCleanup:
+    Type: Custom::StackCleanup
+    Properties:
+      ServiceToken:
+        Fn::ImportValue: !Sub ${ExportPrefix}StackCleanupLambdaArn
+      BucketNames:
+      # (Optional) Array of bucket names you want to delete
+        - ...
+        - ...
+```
+#### Example Stack with Cleanup
+
+```yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Example Stack with Cleanup
+
+Parameters:
+  EnableLogging:
+    Description: Enable/Disable logging
+    AllowedValues:
+      - Enable
+      - Disable
+    Default: Disable
+    Type: String
+
+  Cleanup:
+    AllowedValues:
+      - Enable
+      - Disable
+    Default: Disable
+    Description: Auto Cleanup this stack's resources during deletion to simplify maintenance during development. Do Not Enable on Production
+    Type: String
+
+  ExportPrefix:
+    Type: String
+    Description: (Optional) The Prefix name used when deploying the cfn-stack-cleanup lambda
+    Default: ""
+
+Conditions:
+  cEnableCleanup: !Equals [!Ref Cleanup, 'Enable']
+  cEnableLogging: !Equals [!Ref EnableLogging, 'Enable']
+
+
+Resources:
+  AutoCleanup:
+    Type: Custom::AutoCleanup
+    Condition: cEnableCleanup # You may not always want to clean up resources. For instance on Production environments
+    Properties:
+      ServiceToken:
+        Fn::ImportValue: !Sub ${ExportPrefix}StackCleanupLambdaArn
+      BucketNames:
+        - !Ref 'ArtifactBucket'
+        - !Ref 'ApplicationBucket'
+        - !If
+          - cEnableLogging
+          - !Ref 'LogsBucket'
+          - !Ref 'AWS::NoValue'
+
+  ApplicationBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain #This will prevent Cloudformation from throwing an error when trying to delete the bucket
+    Properties:
+      BucketName: !Sub '${DomainName}'
+      AccessControl: 'PublicRead'
+      WebsiteConfiguration:
+        IndexDocument: 'index.html'
+
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain #This will prevent Cloudformation from throwing an error when trying to delete the bucket
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-artifacts'
+
+  LogsBucket:
+    Type: AWS::S3::Bucket
+    Condition: cEnableLogging
+    DeletionPolicy: Retain #This will prevent Cloudformation from throwing an error when trying to delete the bucket
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-logs'
+
+```
+
 ## Contributing
 ### Prerequisites
 To clone and contribute to this application, you'll need Git, Node.js and [Yarn](https://yarnpkg.com/) installed. You can also use an alternative package manager, such as NPM if you prefer!
@@ -81,14 +191,6 @@ git clone https://github.com/xavier-thomas/aws-cfn-stack-cleanup.git
 # Install dependencies
 yarn
 ```
-
-### Permissions
-TODO
-
-### Invoking the Lambda
-TODO
-
-#### Inputs
 
 ### Running tests
 From your favourite command line tool, run the following:

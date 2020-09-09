@@ -110,3 +110,6 @@ dist
 # Test Reports
 reports/
 test-report.xml
+
+# Temp files
+*.temp

@@ -7,6 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # <<<----- ADD NEW VERSIONS HERE
 
-## 🚀 1.0.0 - (August 05, 2020)
+## 🚀 1.0.0 - (September 09, 2020)
 ### Initial
-- Pipeline Monitor lambda released under closed source.
+- Initial version with S3 Bucket Cleanup functionality

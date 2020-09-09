@@ -1,5 +1,7 @@
 export const MOCK_CONTEXT = {};
 
+export const MOCK_S3_SOURCE_BUCKET = 'fake_bucket';
+
 export const MOCK_EVENT_CREATE = {
 	RequestType: 'Create',
 	ResourceProperties: {

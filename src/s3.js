@@ -11,7 +11,7 @@ const s3 = new S3();
  *
  */
 
-const emptyBucket = async (srcBucket, count = 0) => {
+exports.emptyBucket = async (srcBucket, count = 0) => {
 	let data;
 	try {
 		data = await s3.listObjectsV2({ Bucket: srcBucket }).promise();
@@ -49,7 +49,7 @@ const emptyBucket = async (srcBucket, count = 0) => {
 		// S3 list method cannot return more than 1K items,
 		// Therefore recursively call the emptyBucket function to recursively delete more than 1k items.
 		if (deleteData.Deleted.length >= 1000) {
-			return emptyBucket(srcBucket, count);
+			return this.emptyBucket(srcBucket, count);
 		}
 
 		console.info(`Deleted [${count}] objects from Bucket: [${srcBucket}]`);
@@ -58,8 +58,6 @@ const emptyBucket = async (srcBucket, count = 0) => {
 	}
 };
 
-module.exports.emptyBucket = emptyBucket;
-
 /**
  * Delete an S3 Bucket
  * Attempt to empty it first before deleting.
@@ -67,9 +65,9 @@ module.exports.emptyBucket = emptyBucket;
  *
  */
 
-exports.deleteBucket = async (srcBucket) => {
+exports.deleteBucket = async (srcBucket, _emptyBucket = this.emptyBucket) => {
 	// Attempt to empty the bucket first before deleting it.
-	await emptyBucket(srcBucket);
+	await _emptyBucket(srcBucket);
 
 	try {
 		await s3.deleteBucket({ Bucket: srcBucket }).promise();

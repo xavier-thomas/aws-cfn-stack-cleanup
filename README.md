@@ -1,7 +1,7 @@
 <h1 align="center">AWS CloudFormation Stack Cleanup λ</h1>
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=xavier-thomas_aws-cfn-stack-cleanup&metric=alert_status)](https://sonarcloud.io/dashboard?id=xavier-thomas_aws-cfn-stack-cleanup)
-![Tests](https://github.com/xavier-thomas/aws-cfn-stack-cleanup/workflows/tests/badge.svg)
+![Tests](https://github.com/xavier-thomas/aws-cfn-stack-cleanup/workflows/Tests/badge.svg)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=xavier-thomas_aws-cfn-stack-cleanup&metric=coverage)](https://sonarcloud.io/dashboard?id=xavier-thomas_aws-cfn-stack-cleanup)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fxavier-thomas%2Faws-cfn-stack-cleanup%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/xavier-thomas/aws-cfn-stack-cleanup/master)
 [![Dependency Status](https://david-dm.org/xavier-thomas/aws-cfn-stack-cleanup.svg)](https://david-dm.org/xavier-thomas/aws-cfn-stack-cleanup)

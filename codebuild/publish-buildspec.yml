@@ -37,6 +37,11 @@ phases:
   build:
     commands:
       - yarn build
+      - echo "Remove dev dependencies"
+      - rm -rf node_modules
+      - yarn --production
+      - echo "Copy Node_Modules to lambda package"
+      - cp -R node_modules dist/
       - echo "Package Serverless Application"
       - sam package --s3-bucket ${ARTIFACT_BUCKET} --template-file cfn-stack-cleanup.yaml --output-template-file packaged-template.yml --s3-prefix "Cfn-Stack-Cleanup"
 

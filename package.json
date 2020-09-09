@@ -1,7 +1,7 @@
 {
   "name": "aws-cfn-stack-cleanup",
   "version": "1.0.0",
-  "description": "An  AWS lambda that deletes AWS resources that can be called directly or used as a Custom Resource in a CloudFormation template.",
+  "description": "An AWS Lambda that can be invoked as a custom resource from an AWS CloudFormation stack to clean up any left over stack resources such as S3 buckets, Log Groups, Sub-Stacks, etc...",
   "main": "src/index.js",
   "keywords": [
     "aws",
@@ -33,7 +33,7 @@
     }
   },
   "dependencies": {
-    "aws-sdk": "^2.727.0"
+    "cfn-response-promise": "^1.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
@@ -53,5 +53,8 @@
     "jest-junit": "^11.1.0",
     "jest-sonar": "^0.2.10",
     "prettier": "^2.0.5"
+  },
+  "optionalDependencies": {
+    "aws-sdk": "^2.748.0"
   }
 }

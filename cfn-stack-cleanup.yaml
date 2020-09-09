@@ -43,8 +43,6 @@ Resources:
       Timeout: 900
       Policies:
         - AWSLambdaExecute
-        - Version: '2012-10-17'
-          Statement:
           # Allow the lambda to assume role in other accounts.
           # Replace the resource: '*' with a specific role arn if it's fixed.
         - Version: "2012-10-17"

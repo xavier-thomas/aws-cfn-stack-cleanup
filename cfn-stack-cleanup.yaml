@@ -36,7 +36,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub ${ExportPrefix}StackCleanupLambda
-      Handler: src/index.handler
+      Handler: index.handler
       Runtime: nodejs12.x
       CodeUri: ./dist
       MemorySize: 128

@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # <<<----- ADD NEW VERSIONS HERE
 
-## 🚀 1.0.1 - (September 10, 2020)
+## 1.0.2 - (September 10, 2020)
+### Changed
+- Fixed IAM Permissions
+
+## 1.0.1 - (September 10, 2020)
 ### Changed
 - Bug Fixes
 

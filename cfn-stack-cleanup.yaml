@@ -26,7 +26,7 @@ Metadata:
     LicenseUrl: LICENSE
     Name: Cfn-Stack-Cleanup
     ReadmeUrl: README.md
-    SemanticVersion: 1.0.1
+    SemanticVersion: 1.0.2
     SourceCodeUrl: https://github.com/xavier-thomas/aws-cfn-stack-cleanup
     SpdxLicenseId: BSD-3-Clause
 
@@ -50,7 +50,7 @@ Resources:
             - Effect: Allow
               Action:
                 - s3:DeleteBucket
-                - s3:DeleteObjects
+                - s3:DeleteObject
                 - s3:List*
               Resource: '*'
 

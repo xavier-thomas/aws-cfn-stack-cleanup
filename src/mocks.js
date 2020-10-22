@@ -28,9 +28,28 @@ export const MOCK_EVENT_DELETE_BUCKETS_EMPTY_NO_PROP = {
 	ResourceProperties: {},
 };
 
-export const MOCK_ERROR_S3_BUCKET_NOT_EXIST = {
-	message: 'The specified bucket does not exist',
-	code: 'NoSuchBucket',
-	statusCode: 404,
-	retryable: false,
+export const MOCK_ERROR_S3_BUCKET_NOT_EXIST = function () {
+	return new Promise((resolve, reject) => {
+		const error = {
+			message: 'The specified bucket does not exist',
+			code: 'NoSuchBucket',
+			statusCode: 404,
+			retryable: false,
+		};
+
+		reject(error);
+	});
+};
+
+export const MOCK_ERROR_S3_BUCKET_UNKNOWN = function () {
+	return new Promise((resolve, reject) => {
+		const error = {
+			message: 'Unknown Error',
+			code: 'Unknown Error',
+			statusCode: 999,
+			retryable: false,
+		};
+
+		reject(error);
+	});
 };

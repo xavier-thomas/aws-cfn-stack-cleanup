@@ -1,4 +1,4 @@
-import { MOCK_S3_SOURCE_BUCKET } from './mocks';
+import { MOCK_ERROR_S3_BUCKET_NOT_EXIST, MOCK_ERROR_S3_BUCKET_UNKNOWN, MOCK_S3_SOURCE_BUCKET } from './mocks';
 import { S3 } from 'aws-sdk';
 import { deleteBucket } from './s3.js';
 
@@ -33,6 +33,7 @@ describe('[s3.js] unit tests', () => {
 			mock_deleteBucket.mockReturnValue({
 				promise: jest.fn().mockResolvedValue({}),
 			});
+
 			mock_emptyBucket.mockReturnValue({
 				promise: jest.fn().mockResolvedValue({}),
 			});
@@ -44,7 +45,33 @@ describe('[s3.js] unit tests', () => {
 			});
 			expect(mock_emptyBucket).toHaveBeenCalledTimes(1);
 			expect(mock_emptyBucket).toHaveBeenCalledWith(MOCK_S3_SOURCE_BUCKET);
+			expect(console.info).toHaveBeenCalledWith(`Bucket: [${MOCK_S3_SOURCE_BUCKET}] deleted.`);
 			expect(response).toEqual({});
 		});
+
+		it('must ignore a bucket not found error as the bucket may have already been deleted', async () => {
+			mock_deleteBucket.mockReturnValue({
+				promise: MOCK_ERROR_S3_BUCKET_NOT_EXIST,
+			});
+
+			const response = await deleteBucket(MOCK_S3_SOURCE_BUCKET, mock_emptyBucket);
+			expect(console.info).toHaveBeenCalledWith(
+				`Bucket: [${MOCK_S3_SOURCE_BUCKET}] not found. May have already been deleted.`
+			);
+			expect(response).toEqual({});
+		});
+
+		it('must throw all other errors', async () => {
+			mock_deleteBucket.mockReturnValue({
+				promise: MOCK_ERROR_S3_BUCKET_UNKNOWN,
+			});
+
+			await expect(deleteBucket(MOCK_S3_SOURCE_BUCKET, mock_emptyBucket)).rejects.toThrowError(
+				`Error Deleting Bucket: [fake_bucket] - Unknown Error`
+			);
+			expect(console.info).not.toHaveBeenCalled();
+		});
+
+		// TODO: Test an error being thrown by the empty bucket function
 	});
 });

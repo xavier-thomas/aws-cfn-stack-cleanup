@@ -14,21 +14,21 @@ exports.emptyBucket = async (srcBucket, count = 0) => {
 	let data;
 	try {
 		data = await s3.listObjectsV2({ Bucket: srcBucket }).promise();
+
+		if (data.Contents.length === 0) {
+			if (count > 0) {
+				console.info(`Deleted [${count}] objects from Bucket: [${srcBucket}].`);
+			} else {
+				console.info(`Bucket: [${srcBucket}] is empty.`);
+			}
+			return;
+		}
 	} catch (err) {
 		if (err.code === 'NoSuchBucket' && err.statusCode === 404) {
 			//Bucket likely already Deleted
 			return;
 		}
-		throw new Error(`Error Listing Objects in Bucket: [${srcBucket}] - ${err}`);
-	}
-
-	if (data.Contents.length === 0) {
-		if (count > 0) {
-			console.info(`Deleted [${count}] objects from Bucket: [${srcBucket}]`);
-		} else {
-			console.info(`Bucket: [${srcBucket}] is empty`);
-		}
-		return;
+		throw new Error(`Error Listing Objects in Bucket: [${srcBucket}] - ${err.message}`);
 	}
 
 	try {
@@ -51,9 +51,9 @@ exports.emptyBucket = async (srcBucket, count = 0) => {
 			return this.emptyBucket(srcBucket, count);
 		}
 
-		console.info(`Deleted [${count}] objects from Bucket: [${srcBucket}]`);
+		console.info(`Deleted [${count}] objects from Bucket: [${srcBucket}].`);
 	} catch (err) {
-		throw new Error(`Error Deleting Objects in Bucket: [${srcBucket}] - ${err}`);
+		throw new Error(`Error Deleting Objects in Bucket: [${srcBucket}] - ${err.message}`);
 	}
 };
 
@@ -78,7 +78,7 @@ exports.deleteBucket = async (srcBucket, _emptyBucket = this.emptyBucket) => {
 		if (err.code === 'NoSuchBucket') {
 			//Bucket likely already Deleted
 			console.info(`Bucket: [${srcBucket}] not found. May have already been deleted.`);
-			return {};
+			return;
 		} else {
 			throw new Error(`Error Deleting Bucket: [${srcBucket}] - ${err.message}`);
 		}

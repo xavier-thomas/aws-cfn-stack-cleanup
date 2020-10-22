@@ -53,3 +53,6 @@ export const MOCK_ERROR_S3_BUCKET_UNKNOWN = function () {
 		reject(error);
 	});
 };
+
+export const generateDummyObjectList = (num) =>
+	Array.from({ length: num }, (value, key) => ({ Key: `objectKey${key}` }));

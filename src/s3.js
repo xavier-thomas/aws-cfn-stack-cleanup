@@ -1,7 +1,5 @@
 import { S3 } from 'aws-sdk';
 
-const s3 = new S3();
-
 /**
  * Empty Files from S3 Bucket
  *
@@ -12,6 +10,7 @@ const s3 = new S3();
  */
 
 exports.emptyBucket = async (srcBucket, count = 0) => {
+	const s3 = new S3();
 	let data;
 	try {
 		data = await s3.listObjectsV2({ Bucket: srcBucket }).promise();
@@ -66,12 +65,14 @@ exports.emptyBucket = async (srcBucket, count = 0) => {
  */
 
 exports.deleteBucket = async (srcBucket, _emptyBucket = this.emptyBucket) => {
+	const s3 = new S3();
 	// Attempt to empty the bucket first before deleting it.
 	await _emptyBucket(srcBucket);
 
 	try {
-		await s3.deleteBucket({ Bucket: srcBucket }).promise();
+		const response = await s3.deleteBucket({ Bucket: srcBucket }).promise();
 		console.info(`Bucket: [${srcBucket}] deleted`);
+		return response;
 	} catch (err) {
 		if (err.code === 'NoSuchBucket' && err.statusCode === 404) {
 			//Bucket likely already Deleted

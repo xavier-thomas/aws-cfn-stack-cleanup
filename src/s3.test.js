@@ -1,21 +1,19 @@
-jest.mock('aws-sdk');
 import { MOCK_S3_SOURCE_BUCKET } from './mocks';
-import { deleteBucket, emptyBucket } from './s3.js';
-import AWS from 'aws-sdk';
+import { S3 } from 'aws-sdk';
+import { deleteBucket } from './s3.js';
+
+jest.mock('aws-sdk');
 
 describe('[s3.js] unit tests', () => {
-	const generateDummyObjectList = (num) => Array.from({ length: num }, (value, key) => ({ Key: `objectKey${key}` }));
-
 	const mock_deleteBucket = jest.fn();
 	const mock_deleteObjects = jest.fn();
 	const mock_listObjectsV2 = jest.fn();
-
 	const mock_emptyBucket = jest.fn();
 
 	// What to do before test is executed
 	beforeEach(() => {
 		jest.restoreAllMocks();
-		AWS.S3.mockImplementation(() => ({
+		S3.mockImplementation(() => ({
 			deleteBucket: mock_deleteBucket,
 			deleteObjects: mock_deleteObjects,
 			listObjectsV2: mock_listObjectsV2,
@@ -35,7 +33,6 @@ describe('[s3.js] unit tests', () => {
 			mock_deleteBucket.mockReturnValue({
 				promise: jest.fn().mockResolvedValue({}),
 			});
-
 			mock_emptyBucket.mockReturnValue({
 				promise: jest.fn().mockResolvedValue({}),
 			});
@@ -45,12 +42,8 @@ describe('[s3.js] unit tests', () => {
 			expect(mock_deleteBucket).toHaveBeenCalledWith({
 				Bucket: MOCK_S3_SOURCE_BUCKET,
 			});
-
 			expect(mock_emptyBucket).toHaveBeenCalledTimes(1);
-			expect(mock_emptyBucket).toHaveBeenCalledWith({
-				Bucket: MOCK_S3_SOURCE_BUCKET,
-			});
-
+			expect(mock_emptyBucket).toHaveBeenCalledWith(MOCK_S3_SOURCE_BUCKET);
 			expect(response).toEqual({});
 		});
 	});

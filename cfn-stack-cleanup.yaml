@@ -37,6 +37,8 @@ Resources:
     Properties:
       FunctionName: !Sub ${ExportPrefix}StackCleanupLambda
       Handler: index.handler
+      Layers:
+        - !Ref DependencyLayer
       Runtime: nodejs12.x
       CodeUri: ./dist
       MemorySize: 128
@@ -54,6 +56,15 @@ Resources:
                 - s3:List*
               Resource: '*'
 
+  DependencyLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - nodejs12.x
+      ContentUri: ./nodejs
+      Description: Dependency layer for the Stack Cleanup lambda function
+      LayerName: !Sub ${ExportPrefix}StackCleanupLambdaLayer
+      RetentionPolicy: Delete
 
 Outputs:
 

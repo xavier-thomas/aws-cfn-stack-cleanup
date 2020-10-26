@@ -70,7 +70,7 @@ describe('[s3.js] unit tests', () => {
 
 		// TODO: Test an error being thrown by the empty bucket function
 	});
-	//
+
 	describe('[emptyBucket] when a bucket name is passed', () => {
 		it('must first list objects in the bucket', async () => {
 			mock_listObjectsV2.mockResolvedValueOnce({

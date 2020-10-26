@@ -25,7 +25,7 @@
     "lint.ci": "eslint ./src",
     "mutate": "stryker run",
     "precommit": "yarn audit && yarn lint.ci && yarn test",
-    "test": "jest --config=jest.config.json --silent=false"
+    "test": "jest --config=jest.config.json"
   },
   "husky": {
     "hooks": {

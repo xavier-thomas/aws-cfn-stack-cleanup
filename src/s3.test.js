@@ -73,15 +73,25 @@ describe('[s3.js] unit tests', () => {
 
 	describe('[emptyBucket] when a bucket name is passed', () => {
 		it('must first list objects in the bucket', async () => {
+			const data = generateDummyObjectList(1);
 			mock_listObjectsV2.mockResolvedValueOnce({
-				Contents: generateDummyObjectList(1),
+				Contents: data,
 			});
 			mock_deleteObjects.mockResolvedValueOnce({
-				Deleted: generateDummyObjectList(1),
+				Deleted: data,
 			});
 			const response = await emptyBucket(MOCK_S3_SOURCE_BUCKET);
 			expect(mock_listObjectsV2).toHaveBeenCalledTimes(1);
+			expect(mock_listObjectsV2).toHaveBeenCalledWith({ Bucket: MOCK_S3_SOURCE_BUCKET });
 			expect(mock_deleteObjects).toHaveBeenCalledTimes(1);
+			expect(mock_deleteObjects).toHaveBeenCalledWith({
+				Bucket: MOCK_S3_SOURCE_BUCKET,
+				Delete: {
+					Objects: data.map((c) => {
+						return { Key: c.Key };
+					}),
+				},
+			});
 			expect(response).toBeUndefined();
 		});
 
@@ -91,6 +101,7 @@ describe('[s3.js] unit tests', () => {
 			});
 			const response = await emptyBucket(MOCK_S3_SOURCE_BUCKET);
 			expect(mock_listObjectsV2).toHaveBeenCalledTimes(1);
+			expect(console.info).toHaveBeenCalledWith(`Bucket: [${MOCK_S3_SOURCE_BUCKET}] is empty.`);
 			expect(mock_deleteObjects).not.toHaveBeenCalled();
 			expect(response).toBeUndefined();
 		});
@@ -163,6 +174,22 @@ describe('[s3.js] unit tests', () => {
 			expect(mock_listObjectsV2).toHaveBeenCalledTimes(2);
 			expect(mock_deleteObjects).toHaveBeenCalledTimes(2);
 			expect(console.info).toHaveBeenCalledWith(`Deleted [1100] objects from Bucket: [${MOCK_S3_SOURCE_BUCKET}].`);
+
+			expect(result).toBeUndefined();
+		});
+
+		it('must log the total count of deleted objects when there are no more items in the bucket', async () => {
+			mock_listObjectsV2.mockResolvedValueOnce({
+				Contents: generateDummyObjectList(0),
+			});
+
+			const count = 5432;
+
+			const result = await emptyBucket(MOCK_S3_SOURCE_BUCKET, count);
+
+			expect(mock_listObjectsV2).toHaveBeenCalledTimes(1);
+			expect(mock_deleteObjects).not.toHaveBeenCalled();
+			expect(console.info).toHaveBeenCalledWith(`Deleted [${count}] objects from Bucket: [${MOCK_S3_SOURCE_BUCKET}].`);
 
 			expect(result).toBeUndefined();
 		});

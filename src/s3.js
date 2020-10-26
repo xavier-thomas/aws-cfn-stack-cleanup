@@ -23,7 +23,7 @@ export const emptyBucket = async (srcBucket, count = 0) => {
 			return;
 		}
 	} catch (err) {
-		if (err.code === 'NoSuchBucket' && err.statusCode === 404) {
+		if (err.code === 'NoSuchBucket') {
 			//Bucket likely already Deleted
 			return;
 		}

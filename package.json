@@ -24,8 +24,8 @@
     "cfn-lint": "cfn-lint cfn-stack-cleanup.yaml",
     "lint.ci": "eslint ./src",
     "mutate": "stryker run",
-    "precommit": "yarn audit && yarn lint && yarn test",
-    "test": "jest --config=jest.config.json"
+    "precommit": "yarn audit && yarn lint.ci && yarn test",
+    "test": "jest --config=jest.config.json --silent=false"
   },
   "husky": {
     "hooks": {
@@ -33,6 +33,7 @@
     }
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^1.0.0-rc.2",
     "cfn-response-promise": "^1.1.0"
   },
   "devDependencies": {
@@ -53,8 +54,5 @@
     "jest-junit": "^11.1.0",
     "jest-sonar": "^0.2.10",
     "prettier": "^2.0.5"
-  },
-  "optionalDependencies": {
-    "aws-sdk": "^2.748.0"
   }
 }

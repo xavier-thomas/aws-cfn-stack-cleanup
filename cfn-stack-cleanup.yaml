@@ -61,7 +61,7 @@ Resources:
     Properties:
       CompatibleRuntimes:
         - nodejs12.x
-      ContentUri: ./nodejs
+      ContentUri: ./layer
       Description: Dependency layer for the Stack Cleanup lambda function
       LayerName: !Sub ${ExportPrefix}StackCleanupLambdaLayer
       RetentionPolicy: Delete

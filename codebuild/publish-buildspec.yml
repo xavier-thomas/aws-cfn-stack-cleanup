@@ -41,7 +41,7 @@ phases:
       - rm -rf node_modules
       - yarn --production
       - echo "Copy Node_Modules to lambda package"
-      - mkdir nodejs && cp -R node_modules nodejs/
+      - mkdir -p layer/nodejs && cp -R node_modules layer/nodejs
       - echo "Package Serverless Application"
       - sam package --s3-bucket ${ARTIFACT_BUCKET} --template-file cfn-stack-cleanup.yaml --output-template-file packaged-template.yml --s3-prefix "Cfn-Stack-Cleanup"
 

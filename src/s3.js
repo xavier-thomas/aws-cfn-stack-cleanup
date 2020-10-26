@@ -1,4 +1,4 @@
-import { S3 } from 'aws-sdk';
+import { S3Client } from '@aws-sdk/client-s3';
 
 /**
  * Empty Files from S3 Bucket
@@ -9,12 +9,11 @@ import { S3 } from 'aws-sdk';
  *
  */
 
-exports.emptyBucket = async (srcBucket, count = 0) => {
-	const s3 = new S3();
+export const emptyBucket = async (srcBucket, count = 0) => {
+	const s3 = new S3Client();
 	let data;
 	try {
-		data = await s3.listObjectsV2({ Bucket: srcBucket }).promise();
-
+		data = await s3.listObjectsV2({ Bucket: srcBucket });
 		if (data.Contents.length === 0) {
 			if (count > 0) {
 				console.info(`Deleted [${count}] objects from Bucket: [${srcBucket}].`);
@@ -32,23 +31,20 @@ exports.emptyBucket = async (srcBucket, count = 0) => {
 	}
 
 	try {
-		const deleteData = await s3
-			.deleteObjects({
-				Bucket: srcBucket,
-				Delete: {
-					Objects: data.Contents.map((c) => {
-						return { Key: c.Key };
-					}),
-				},
-			})
-			.promise();
-
+		const deleteData = await s3.deleteObjects({
+			Bucket: srcBucket,
+			Delete: {
+				Objects: data.Contents.map((c) => {
+					return { Key: c.Key };
+				}),
+			},
+		});
 		count += deleteData.Deleted.length;
 
 		// S3 list method cannot return more than 1K items,
 		// Therefore recursively call the emptyBucket function to recursively delete more than 1k items.
 		if (deleteData.Deleted.length >= 1000) {
-			return this.emptyBucket(srcBucket, count);
+			return emptyBucket(srcBucket, count);
 		}
 
 		console.info(`Deleted [${count}] objects from Bucket: [${srcBucket}].`);
@@ -64,14 +60,14 @@ exports.emptyBucket = async (srcBucket, count = 0) => {
  *
  */
 
-exports.deleteBucket = async (srcBucket, _emptyBucket = this.emptyBucket) => {
-	const s3 = new S3();
+export const deleteBucket = async (srcBucket, _emptyBucket = this.emptyBucket) => {
+	const s3 = new S3Client();
 
 	try {
 		// Attempt to empty the bucket first before deleting it.
 		await _emptyBucket(srcBucket);
 
-		const response = await s3.deleteBucket({ Bucket: srcBucket }).promise();
+		const response = await s3.deleteBucket({ Bucket: srcBucket });
 		console.info(`Bucket: [${srcBucket}] deleted.`);
 		return response;
 	} catch (err) {

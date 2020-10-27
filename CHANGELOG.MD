@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # <<<----- ADD NEW VERSIONS HERE
 
+## 1.1.0 - (October 26, 2020)
+### Changed
+- Improved S3 Test Coverage
+- Changed to use lambda layers
+- Change AWS SDK version to 3
+
 ## 1.0.2 - (September 10, 2020)
 ### Changed
 - Fixed IAM Permissions

@@ -54,7 +54,7 @@ Resources:
     Properties:
       Location:
         ApplicationId: arn:aws:serverlessrepo:us-east-1:673103718481:applications/Cfn-Stack-Cleanup
-      SemanticVersion: 1.0.2
+      SemanticVersion: 1.1.0
       # Optional Parameter to control the export name of the nested stack
       Parameters:
         ExportPrefix: !Ref AWS::StackName
@@ -229,6 +229,7 @@ The project's maintainers will need to approve this before it can be merged in a
 
 ## Authors
 **[Xavier Thomas](https://github.com/xavier-thomas)**
+**[Matthew Farrow](https://github.com/mfarrow701)**
 
 ## Licence
 **[3-Clause BSD](./LICENCE)**

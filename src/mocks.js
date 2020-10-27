@@ -1,5 +1,7 @@
 export const MOCK_CONTEXT = {};
 
+export const MOCK_S3_SOURCE_BUCKET = 'fake_bucket';
+
 export const MOCK_EVENT_CREATE = {
 	RequestType: 'Create',
 	ResourceProperties: {
@@ -32,3 +34,13 @@ export const MOCK_ERROR_S3_BUCKET_NOT_EXIST = {
 	statusCode: 404,
 	retryable: false,
 };
+
+export const MOCK_ERROR_S3_BUCKET_UNKNOWN = {
+	message: 'Unknown Error',
+	code: 'Unknown Error',
+	statusCode: 999,
+	retryable: false,
+};
+
+export const generateDummyObjectList = (num) =>
+	Array.from({ length: num }, (value, key) => ({ Key: `objectKey${key}` }));

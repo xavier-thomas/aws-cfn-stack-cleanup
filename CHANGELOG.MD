@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # <<<----- ADD NEW VERSIONS HERE
 
+## 1.1.1 - (October 27, 2020)
+### Changed
+- Updated dependencies
+
 ## 1.1.0 - (October 26, 2020)
 ### Changed
 - Improved S3 Test Coverage

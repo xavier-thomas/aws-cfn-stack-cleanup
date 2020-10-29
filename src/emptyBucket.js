@@ -52,31 +52,3 @@ export const emptyBucket = async (srcBucket, count = 0) => {
 		throw new Error(`Error Deleting Objects in Bucket: [${srcBucket}] - ${err.message}`);
 	}
 };
-
-/**
- * Delete an S3 Bucket
- * Attempt to empty it first before deleting.
- * @param {String} srcBucket - The S3 Bucket Name to Delete
- *
- */
-
-export const deleteBucket = async (srcBucket, _emptyBucket = this.emptyBucket) => {
-	const s3 = new S3Client();
-
-	try {
-		// Attempt to empty the bucket first before deleting it.
-		await _emptyBucket(srcBucket);
-
-		const response = await s3.deleteBucket({ Bucket: srcBucket });
-		console.info(`Bucket: [${srcBucket}] deleted.`);
-		return response;
-	} catch (err) {
-		if (err.code === 'NoSuchBucket') {
-			//Bucket likely already Deleted
-			console.info(`Bucket: [${srcBucket}] not found. May have already been deleted.`);
-			return;
-		} else {
-			throw new Error(`Error Deleting Bucket: [${srcBucket}] - ${err.message}`);
-		}
-	}
-};

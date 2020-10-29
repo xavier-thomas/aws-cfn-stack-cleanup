@@ -4,8 +4,8 @@ import {
 	MOCK_S3_SOURCE_BUCKET,
 	generateDummyObjectList,
 } from './mocks';
-import { deleteBucket, emptyBucket } from './s3.js';
 import { S3Client } from '@aws-sdk/client-s3';
+import { emptyBucket } from './emptyBucket';
 
 jest.mock('@aws-sdk/client-s3');
 
@@ -13,7 +13,6 @@ describe('[s3.js] unit tests', () => {
 	const mock_deleteBucket = jest.fn();
 	const mock_deleteObjects = jest.fn();
 	const mock_listObjectsV2 = jest.fn();
-	const mock_emptyBucket = jest.fn();
 
 	// What to do before test is executed
 	beforeEach(() => {
@@ -31,44 +30,6 @@ describe('[s3.js] unit tests', () => {
 	// What to do after each test is executed
 	afterEach(() => {
 		jest.clearAllMocks();
-	});
-
-	describe('[deleteBucket] when a bucket name is passed', () => {
-		it('must first empty then delete the bucket when the bucket exists', async () => {
-			mock_deleteBucket.mockResolvedValue({});
-
-			mock_emptyBucket.mockResolvedValue({});
-
-			const response = await deleteBucket(MOCK_S3_SOURCE_BUCKET, mock_emptyBucket);
-
-			expect(mock_deleteBucket).toHaveBeenCalledWith({
-				Bucket: MOCK_S3_SOURCE_BUCKET,
-			});
-			expect(mock_emptyBucket).toHaveBeenCalledTimes(1);
-			expect(mock_emptyBucket).toHaveBeenCalledWith(MOCK_S3_SOURCE_BUCKET);
-			expect(console.info).toHaveBeenCalledWith(`Bucket: [${MOCK_S3_SOURCE_BUCKET}] deleted.`);
-			expect(response).toEqual({});
-		});
-
-		it('must ignore a bucket not found error as the bucket may have already been deleted', async () => {
-			mock_deleteBucket.mockRejectedValue(MOCK_ERROR_S3_BUCKET_NOT_EXIST);
-			const response = await deleteBucket(MOCK_S3_SOURCE_BUCKET, mock_emptyBucket);
-			expect(console.info).toHaveBeenCalledWith(
-				`Bucket: [${MOCK_S3_SOURCE_BUCKET}] not found. May have already been deleted.`
-			);
-			expect(response).toEqual();
-		});
-
-		it('must throw all other errors', async () => {
-			mock_deleteBucket.mockRejectedValue(MOCK_ERROR_S3_BUCKET_UNKNOWN);
-
-			await expect(deleteBucket(MOCK_S3_SOURCE_BUCKET, mock_emptyBucket)).rejects.toThrowError(
-				`Error Deleting Bucket: [fake_bucket] - Unknown Error`
-			);
-			expect(console.info).not.toHaveBeenCalled();
-		});
-
-		// TODO: Test an error being thrown by the empty bucket function
 	});
 
 	describe('[emptyBucket] when a bucket name is passed', () => {

@@ -13,7 +13,7 @@ describe('[s3.js] unit tests', () => {
 	const mock_deleteBucket = jest.fn();
 	const mock_deleteObjects = jest.fn();
 	const mock_listObjectsV2 = jest.fn();
-	const mock_emptyBucket = jest.fn();
+	// const mock_emptyBucket = jest.fn();
 
 	// What to do before test is executed
 	beforeEach(() => {
@@ -35,24 +35,39 @@ describe('[s3.js] unit tests', () => {
 
 	describe('[deleteBucket] when a bucket name is passed', () => {
 		it('must first empty then delete the bucket when the bucket exists', async () => {
+			const data = generateDummyObjectList(1);
+			mock_listObjectsV2.mockResolvedValueOnce({
+				Contents: data,
+			});
+			mock_deleteObjects.mockResolvedValueOnce({
+				Deleted: data,
+			});
 			mock_deleteBucket.mockResolvedValue({});
 
-			mock_emptyBucket.mockResolvedValue({});
+			const response = await deleteBucket(MOCK_S3_SOURCE_BUCKET);
 
-			const response = await deleteBucket(MOCK_S3_SOURCE_BUCKET, mock_emptyBucket);
-
+			expect(mock_deleteBucket).toHaveBeenCalledTimes(1);
 			expect(mock_deleteBucket).toHaveBeenCalledWith({
 				Bucket: MOCK_S3_SOURCE_BUCKET,
 			});
-			expect(mock_emptyBucket).toHaveBeenCalledTimes(1);
-			expect(mock_emptyBucket).toHaveBeenCalledWith(MOCK_S3_SOURCE_BUCKET);
+			expect(mock_listObjectsV2).toHaveBeenCalledTimes(1);
+			expect(mock_deleteObjects).toHaveBeenCalledTimes(1);
+			//expect(mock_emptyBucket).toHaveBeenCalledTimes(1);
+			//expect(mock_emptyBucket).toHaveBeenCalledWith(MOCK_S3_SOURCE_BUCKET);
 			expect(console.info).toHaveBeenCalledWith(`Bucket: [${MOCK_S3_SOURCE_BUCKET}] deleted.`);
 			expect(response).toEqual({});
 		});
 
 		it('must ignore a bucket not found error as the bucket may have already been deleted', async () => {
+			const data = generateDummyObjectList(1);
+			mock_listObjectsV2.mockResolvedValueOnce({
+				Contents: data,
+			});
+			mock_deleteObjects.mockResolvedValueOnce({
+				Deleted: data,
+			});
 			mock_deleteBucket.mockRejectedValue(MOCK_ERROR_S3_BUCKET_NOT_EXIST);
-			const response = await deleteBucket(MOCK_S3_SOURCE_BUCKET, mock_emptyBucket);
+			const response = await deleteBucket(MOCK_S3_SOURCE_BUCKET);
 			expect(console.info).toHaveBeenCalledWith(
 				`Bucket: [${MOCK_S3_SOURCE_BUCKET}] not found. May have already been deleted.`
 			);
@@ -60,12 +75,19 @@ describe('[s3.js] unit tests', () => {
 		});
 
 		it('must throw all other errors', async () => {
+			const data = generateDummyObjectList(1);
+			mock_listObjectsV2.mockResolvedValueOnce({
+				Contents: data,
+			});
+			mock_deleteObjects.mockResolvedValueOnce({
+				Deleted: data,
+			});
 			mock_deleteBucket.mockRejectedValue(MOCK_ERROR_S3_BUCKET_UNKNOWN);
 
-			await expect(deleteBucket(MOCK_S3_SOURCE_BUCKET, mock_emptyBucket)).rejects.toThrowError(
+			await expect(deleteBucket(MOCK_S3_SOURCE_BUCKET)).rejects.toThrowError(
 				`Error Deleting Bucket: [fake_bucket] - Unknown Error`
 			);
-			expect(console.info).not.toHaveBeenCalled();
+			// expect(console.info).not.toHaveBeenCalled();
 		});
 
 		// TODO: Test an error being thrown by the empty bucket function

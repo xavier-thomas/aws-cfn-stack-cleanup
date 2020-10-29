@@ -228,8 +228,8 @@ The project's maintainers will need to approve this before it can be merged in a
 
 
 ## Authors
-**[Xavier Thomas](https://github.com/xavier-thomas)**
-**[Matthew Farrow](https://github.com/mfarrow701)**
+- **[Xavier Thomas](https://github.com/xavier-thomas)**
+- **[Matthew Farrow](https://github.com/mfarrow701)**
 
 ## Licence
 **[3-Clause BSD](./LICENCE)**

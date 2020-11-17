@@ -26,7 +26,7 @@ Metadata:
     LicenseUrl: LICENSE
     Name: Cfn-Stack-Cleanup
     ReadmeUrl: README.md
-    SemanticVersion: 1.1.2
+    SemanticVersion: 1.1.5
     SourceCodeUrl: https://github.com/xavier-thomas/aws-cfn-stack-cleanup
     SpdxLicenseId: BSD-3-Clause
 
@@ -45,8 +45,7 @@ Resources:
       Timeout: 900
       Policies:
         - AWSLambdaExecute
-          # Allow the lambda to assume role in other accounts.
-          # Replace the resource: '*' with a specific role arn if it's fixed.
+          # Replace the resource: '*' with a specific role arn.
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow

@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3 } from 'aws-sdk';
 
 /**
  * Empty Files from S3 Bucket
@@ -10,7 +10,7 @@ import { S3Client } from '@aws-sdk/client-s3';
  */
 
 export const emptyBucket = async (srcBucket, count = 0) => {
-	const s3 = new S3Client();
+	const s3 = new S3();
 	let data;
 	try {
 		data = await s3.listObjectsV2({ Bucket: srcBucket });

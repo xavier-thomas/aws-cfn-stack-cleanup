@@ -1,9 +1,9 @@
 import * as emptyBucket from './emptyBucket';
 import { MOCK_ERROR_S3_BUCKET_NOT_EXIST, MOCK_ERROR_S3_BUCKET_UNKNOWN, MOCK_S3_SOURCE_BUCKET } from './mocks';
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3 } from 'aws-sdk';
 import { deleteBucket } from './deleteBucket';
 
-jest.mock('@aws-sdk/client-s3');
+jest.mock('aws-sdk');
 
 describe('[s3.js] unit tests', () => {
 	const mock_deleteBucket = jest.fn();
@@ -13,7 +13,7 @@ describe('[s3.js] unit tests', () => {
 	// What to do before test is executed
 	beforeEach(() => {
 		jest.restoreAllMocks();
-		S3Client.mockImplementation(() => ({
+		S3.mockImplementation(() => ({
 			deleteBucket: mock_deleteBucket,
 			deleteObjects: mock_deleteObjects,
 			listObjectsV2: mock_listObjectsV2,

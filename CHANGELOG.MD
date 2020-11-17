@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # <<<----- ADD NEW VERSIONS HERE
 
+## 1.1.5 - (November 17, 2020)
+### Changed
+- Rollback Scoped AWS S3 dependency that was introduced in v1.1.0
+
+## 1.1.3 / 1.1.4 - (November 17, 2020)
+### Changed
+- Troubleshooting. Do not use versions
+
 ## 1.1.2 - (November 16, 2020)
 ### Changed
 - [Issue-9](https://github.com/xavier-thomas/aws-cfn-stack-cleanup/issues/9) - Fixed Bug while calling emptyBucket()

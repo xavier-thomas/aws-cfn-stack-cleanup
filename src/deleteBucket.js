@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3 } from 'aws-sdk';
 import { emptyBucket } from './emptyBucket';
 
 /**
@@ -9,7 +9,7 @@ import { emptyBucket } from './emptyBucket';
  */
 
 export const deleteBucket = async (srcBucket) => {
-	const s3 = new S3Client();
+	const s3 = new S3();
 
 	try {
 		// Attempt to empty the bucket first before deleting it.

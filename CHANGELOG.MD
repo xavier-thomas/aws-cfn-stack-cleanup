@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # <<<----- ADD NEW VERSIONS HERE
 
+## 1.1.6 - (November 17, 2020)
+### Changed
+- Hotfix to v1.1.5
+
 ## 1.1.5 - (November 17, 2020)
 ### Changed
 - Rollback Scoped AWS S3 dependency that was introduced in v1.1.0

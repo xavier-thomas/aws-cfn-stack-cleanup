@@ -35,11 +35,15 @@ describe('[s3.js] unit tests', () => {
 	describe('[emptyBucket] when a bucket name is passed', () => {
 		it('must first list objects in the bucket', async () => {
 			const data = generateDummyObjectList(1);
-			mock_listObjectsV2.mockResolvedValueOnce({
-				Contents: data,
+			mock_listObjectsV2.mockReturnValue({
+				promise: jest.fn().mockResolvedValueOnce({
+					Contents: data,
+				}),
 			});
-			mock_deleteObjects.mockResolvedValueOnce({
-				Deleted: data,
+			mock_deleteObjects.mockReturnValue({
+				promise: jest.fn().mockResolvedValueOnce({
+					Deleted: data,
+				}),
 			});
 			const response = await emptyBucket(MOCK_S3_SOURCE_BUCKET);
 			expect(mock_listObjectsV2).toHaveBeenCalledTimes(1);
@@ -57,8 +61,10 @@ describe('[s3.js] unit tests', () => {
 		});
 
 		it('must return success if there are no objects in the bucket', async () => {
-			mock_listObjectsV2.mockResolvedValueOnce({
-				Contents: generateDummyObjectList(0),
+			mock_listObjectsV2.mockReturnValue({
+				promise: jest.fn().mockResolvedValueOnce({
+					Contents: generateDummyObjectList(0),
+				}),
 			});
 			const response = await emptyBucket(MOCK_S3_SOURCE_BUCKET);
 			expect(mock_listObjectsV2).toHaveBeenCalledTimes(1);
@@ -68,8 +74,9 @@ describe('[s3.js] unit tests', () => {
 		});
 
 		it('must ignore a bucket not found error as the bucket may have already been deleted', async () => {
-			mock_listObjectsV2.mockRejectedValue(MOCK_ERROR_S3_BUCKET_NOT_EXIST);
-
+			mock_listObjectsV2.mockReturnValue({
+				promise: jest.fn().mockRejectedValue(MOCK_ERROR_S3_BUCKET_NOT_EXIST),
+			});
 			const response = await emptyBucket(MOCK_S3_SOURCE_BUCKET);
 			expect(mock_listObjectsV2).toHaveBeenCalledTimes(1);
 			expect(mock_deleteObjects).not.toHaveBeenCalled();
@@ -77,7 +84,9 @@ describe('[s3.js] unit tests', () => {
 		});
 
 		it('must throw all other errors generated while listing objects', async () => {
-			mock_listObjectsV2.mockRejectedValue(MOCK_ERROR_S3_BUCKET_UNKNOWN);
+			mock_listObjectsV2.mockReturnValue({
+				promise: jest.fn().mockRejectedValue(MOCK_ERROR_S3_BUCKET_UNKNOWN),
+			});
 
 			await expect(emptyBucket(MOCK_S3_SOURCE_BUCKET)).rejects.toThrowError(
 				`Error Listing Objects in Bucket: [fake_bucket] - Unknown Error`
@@ -88,11 +97,16 @@ describe('[s3.js] unit tests', () => {
 
 		it('must log the number of files deleted', async () => {
 			const count = 500;
-			mock_listObjectsV2.mockResolvedValueOnce({
-				Contents: generateDummyObjectList(count),
+
+			mock_listObjectsV2.mockReturnValue({
+				promise: jest.fn().mockResolvedValueOnce({
+					Contents: generateDummyObjectList(count),
+				}),
 			});
-			mock_deleteObjects.mockResolvedValueOnce({
-				Deleted: generateDummyObjectList(count),
+			mock_deleteObjects.mockReturnValue({
+				promise: jest.fn().mockResolvedValueOnce({
+					Deleted: generateDummyObjectList(count),
+				}),
 			});
 			const response = await emptyBucket(MOCK_S3_SOURCE_BUCKET);
 			expect(console.info).toHaveBeenCalledWith(`Deleted [${count}] objects from Bucket: [${MOCK_S3_SOURCE_BUCKET}].`);
@@ -102,11 +116,14 @@ describe('[s3.js] unit tests', () => {
 		});
 
 		it('must throw all errors generated while deleting objects', async () => {
-			mock_listObjectsV2.mockResolvedValueOnce({
-				Contents: generateDummyObjectList(10),
+			mock_listObjectsV2.mockReturnValue({
+				promise: jest.fn().mockResolvedValueOnce({
+					Contents: generateDummyObjectList(10),
+				}),
 			});
-			mock_deleteObjects.mockRejectedValue(MOCK_ERROR_S3_BUCKET_UNKNOWN);
-
+			mock_deleteObjects.mockReturnValue({
+				promise: jest.fn().mockRejectedValue(MOCK_ERROR_S3_BUCKET_UNKNOWN),
+			});
 			await expect(emptyBucket(MOCK_S3_SOURCE_BUCKET)).rejects.toThrowError(
 				`Error Deleting Objects in Bucket: [fake_bucket] - Unknown Error`
 			);
@@ -115,21 +132,26 @@ describe('[s3.js] unit tests', () => {
 		});
 
 		it('must recursively call itself when there are more than 1000 objects in the bucket', async () => {
-			mock_listObjectsV2
-				.mockResolvedValueOnce({
-					Contents: generateDummyObjectList(1000),
-				})
-				.mockResolvedValueOnce({
-					Contents: generateDummyObjectList(100),
-				});
-			mock_deleteObjects
-				.mockResolvedValueOnce({
-					Deleted: generateDummyObjectList(1000),
-				})
-				.mockResolvedValueOnce({
-					Deleted: generateDummyObjectList(100),
-				});
-
+			mock_listObjectsV2.mockReturnValue({
+				promise: jest
+					.fn()
+					.mockResolvedValueOnce({
+						Contents: generateDummyObjectList(1000),
+					})
+					.mockResolvedValueOnce({
+						Contents: generateDummyObjectList(100),
+					}),
+			});
+			mock_deleteObjects.mockReturnValue({
+				promise: jest
+					.fn()
+					.mockResolvedValueOnce({
+						Deleted: generateDummyObjectList(1000),
+					})
+					.mockResolvedValueOnce({
+						Deleted: generateDummyObjectList(100),
+					}),
+			});
 			const result = await emptyBucket(MOCK_S3_SOURCE_BUCKET);
 
 			expect(mock_listObjectsV2).toHaveBeenCalledTimes(2);
@@ -140,10 +162,11 @@ describe('[s3.js] unit tests', () => {
 		});
 
 		it('must log the total count of deleted objects when there are no more items in the bucket', async () => {
-			mock_listObjectsV2.mockResolvedValueOnce({
-				Contents: generateDummyObjectList(0),
+			mock_listObjectsV2.mockReturnValue({
+				promise: jest.fn().mockResolvedValueOnce({
+					Contents: generateDummyObjectList(0),
+				}),
 			});
-
 			const count = 5432;
 
 			const result = await emptyBucket(MOCK_S3_SOURCE_BUCKET, count);

@@ -13,7 +13,7 @@ export const emptyBucket = async (srcBucket, count = 0) => {
 	const s3 = new S3();
 	let data;
 	try {
-		data = await s3.listObjectsV2({ Bucket: srcBucket });
+		data = await s3.listObjectsV2({ Bucket: srcBucket }).promise();
 		if (data.Contents.length === 0) {
 			if (count > 0) {
 				console.info(`Deleted [${count}] objects from Bucket: [${srcBucket}].`);
@@ -31,14 +31,16 @@ export const emptyBucket = async (srcBucket, count = 0) => {
 	}
 
 	try {
-		const deleteData = await s3.deleteObjects({
-			Bucket: srcBucket,
-			Delete: {
-				Objects: data.Contents.map((c) => {
-					return { Key: c.Key };
-				}),
-			},
-		});
+		const deleteData = await s3
+			.deleteObjects({
+				Bucket: srcBucket,
+				Delete: {
+					Objects: data.Contents.map((c) => {
+						return { Key: c.Key };
+					}),
+				},
+			})
+			.promise();
 		count += deleteData.Deleted.length;
 
 		// S3 list method cannot return more than 1K items,

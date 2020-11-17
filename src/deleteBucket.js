@@ -15,7 +15,7 @@ export const deleteBucket = async (srcBucket) => {
 		// Attempt to empty the bucket first before deleting it.
 		await emptyBucket(srcBucket);
 
-		const response = await s3.deleteBucket({ Bucket: srcBucket });
+		const response = await s3.deleteBucket({ Bucket: srcBucket }).promise();
 		console.info(`Bucket: [${srcBucket}] deleted.`);
 		return response;
 	} catch (err) {

@@ -1,6 +1,6 @@
 {
   "name": "aws-cfn-stack-cleanup",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "An AWS Lambda that can be invoked as a custom resource from an AWS CloudFormation stack to clean up any left over stack resources such as S3 buckets, Log Groups, Sub-Stacks, etc...",
   "main": "src/index.js",
   "keywords": [

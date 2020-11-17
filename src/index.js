@@ -1,5 +1,5 @@
 import { FAILED, SUCCESS, send } from 'cfn-response-promise';
-import { deleteBucket } from './s3.js';
+import { deleteBucket } from './deleteBucket.js';
 
 /**
  * Invokes the CFN Cleanup Lambda

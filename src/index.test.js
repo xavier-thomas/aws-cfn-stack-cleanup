@@ -6,10 +6,10 @@ import {
 	MOCK_EVENT_DELETE_BUCKETS_EMPTY_NO_PROP,
 } from './mocks';
 import cfnResponse from 'cfn-response-promise';
-import { deleteBucket } from './s3.js';
+import { deleteBucket } from './deleteBucket';
 import { handler } from './index';
 
-jest.mock('./s3.js');
+jest.mock('./deleteBucket.js');
 
 describe('[index.js] unit tests', () => {
 	const mockCfnResponse = jest.fn();

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # <<<----- ADD NEW VERSIONS HERE
 
+## 1.1.3 - (November 17, 2020)
+### Changed
+- Fix to Lambda Layer path
+
 ## 1.1.2 - (November 16, 2020)
 ### Changed
 - [Issue-9](https://github.com/xavier-thomas/aws-cfn-stack-cleanup/issues/9) - Fixed Bug while calling emptyBucket()

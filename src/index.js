@@ -38,10 +38,8 @@ exports.handler = async (event, context) => {
 			await deleteBucket(bName);
 		});
 
-		// await Promise.all(Array.prototype.concat(bNamesPromises, lgNamePromises, stackNamesPromises));
-		// const nResources = bNamesPromises.length + lgNamePromises.length + stackNamesPromises.length;
-		await Promise.all(Array.prototype.concat(bNamesPromises));
-		const nResources = bNamesPromises.length;
+		await Promise.all(Array.prototype.concat(bNamesPromises, lgNamePromises));
+		const nResources = bNamesPromises.length + lgNamePromises.length;
 		console.info(`All operations completed successfully. ${nResources} resources cleaned up`);
 		return send(event, context, SUCCESS);
 	} catch (err) {

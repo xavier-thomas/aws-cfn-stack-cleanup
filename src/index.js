@@ -1,5 +1,6 @@
 import { FAILED, SUCCESS, send } from 'cfn-response-promise';
 import { deleteBucket } from './deleteBucket.js';
+import { deleteLogGroup } from './deleteLogGroup';
 
 /**
  * Invokes the CFN Cleanup Lambda
@@ -21,11 +22,12 @@ import { deleteBucket } from './deleteBucket.js';
  */
 
 exports.handler = async (event, context) => {
-	console.info('Event: ' + JSON.stringify(event));
-	console.info('Context: ' + JSON.stringify(context));
+	console.log('Event: ' + JSON.stringify(event));
+	console.log('Context: ' + JSON.stringify(context));
 
 	const requestType = event.RequestType;
 	const bucketNames = event.ResourceProperties.BucketNames ? event.ResourceProperties.BucketNames : [];
+	const logGroupNames = event.ResourceProperties.LogGroupNames ? event.ResourceProperties.LogGroupNames : [];
 
 	//Only Process Delete Requests. Create / Update requests are automatically successful
 	if (requestType !== 'Delete') {
@@ -36,6 +38,10 @@ exports.handler = async (event, context) => {
 	try {
 		const bNamesPromises = bucketNames.map(async (bName) => {
 			await deleteBucket(bName);
+		});
+
+		const lgNamePromises = logGroupNames.map(async (lgName) => {
+			await deleteLogGroup(lgName);
 		});
 
 		await Promise.all(Array.prototype.concat(bNamesPromises, lgNamePromises));

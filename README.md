@@ -31,7 +31,7 @@ This lambda is meant to be invoked as a Cloudformation custom resource that when
 
 Any other event other than stack deletion (such as stack creation or stack update) are ignored.
 
-Currently this lambda only supports Emptying and Deletion of S3 buckets, however it's planned to support other resource types in the future.
+Currently this lambda only supports Emptying and Deletion of S3 buckets, and deleting Cloudwatch Log Groups, however it's planned to support other resource types in the future.
 
 ## Getting Started
 ### Deploying the Lambda
@@ -54,7 +54,7 @@ Resources:
     Properties:
       Location:
         ApplicationId: arn:aws:serverlessrepo:us-east-1:673103718481:applications/Cfn-Stack-Cleanup
-      SemanticVersion: 1.1.6
+      SemanticVersion: 1.2.0
       # Optional Parameter to control the export name of the nested stack
       Parameters:
         ExportPrefix: !Ref AWS::StackName
@@ -99,6 +99,10 @@ Resources:
         Fn::ImportValue: !Sub ${ExportPrefix}StackCleanupLambdaArn
       BucketNames:
       # (Optional) Array of bucket names you want to delete
+        - ...
+        - ...
+      LogGroupNames:
+      # (Optional) Array of log group names you want to delete
         - ...
         - ...
 ```
@@ -150,6 +154,12 @@ Resources:
           - cEnableLogging
           - !Ref 'LogsBucket'
           - !Ref 'AWS::NoValue'
+      LogGroupNames:
+        - !If
+          - cEnableLogging
+          - - !Ref LogGroup1
+            - !Ref LogGroup2
+          - !Ref 'AWS::NoValue'
 
   ApplicationBucket:
     Type: AWS::S3::Bucket
@@ -172,6 +182,19 @@ Resources:
     DeletionPolicy: Retain #This will prevent Cloudformation from throwing an error when trying to delete the bucket
     Properties:
       BucketName: !Sub '${AWS::StackName}-logs'
+
+  LogGroup1:
+    Type: AWS::Logs::LogGroup
+    Condition: cEnableLogging
+    Properties:
+      LogGroupName: "test"
+      RetentionInDays: 7
+
+  LogGroup2:
+    Type: AWS::Logs::LogGroup
+    Condition: cEnableLogging
+    Properties:
+      RetentionInDays: 7
 
 ```
 

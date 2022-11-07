@@ -1,9 +1,9 @@
 import {
 	MOCK_CONTEXT,
 	MOCK_EVENT_CREATE,
-	MOCK_EVENT_DELETE_RESOURCES,
 	MOCK_EVENT_DELETE_EMPTY,
 	MOCK_EVENT_DELETE_EMPTY_NO_PROP,
+	MOCK_EVENT_DELETE_RESOURCES,
 } from './mocks';
 import cfnResponse from 'cfn-response-promise';
 import { deleteBucket } from './deleteBucket';

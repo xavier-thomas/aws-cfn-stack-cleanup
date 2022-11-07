@@ -26,7 +26,7 @@ Metadata:
     LicenseUrl: LICENSE
     Name: Cfn-Stack-Cleanup
     ReadmeUrl: README.md
-    SemanticVersion: 1.2.0
+    SemanticVersion: 1.3.0
     SourceCodeUrl: https://github.com/xavier-thomas/aws-cfn-stack-cleanup
     SpdxLicenseId: BSD-3-Clause
 
@@ -39,7 +39,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref DependencyLayer
-      Runtime: nodejs12.x
+      Runtime: nodejs16.x
       CodeUri: ./dist
       MemorySize: 128
       Timeout: 900

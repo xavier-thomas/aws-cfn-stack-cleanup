@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # <<<----- ADD NEW VERSIONS HERE
 
+## 1.3.0 - (November 07, 2022)
+### Changed
+- Upgrade to Node16.
+
 ## 1.2.0 - (January 17, 2022)
 ### Changed
 - Added support for deleting log groups
